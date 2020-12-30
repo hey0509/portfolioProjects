@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	<mvc:annotation-driven></mvc:annotation-driven>
+	<mvc:default-servlet-handler/>
+	<context:component-scan base-package="com.*"></context:component-scan>
+	
+	<mvc:resources location="WEB-INF/views/images/" mapping="/images/**"></mvc:resources>
+	<mvc:resources location="WEB-INF/views/js/" mapping="/js/**"></mvc:resources>
+	<!-- <mvc:resources location="WEB-INF/views/css/" mapping="/css/**"></mvc:resources> -->
+	
+	<!-- 인터셉터 등록 시작-->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/loginCheck/**"/> <!-- /loginCheck/ 하위 주소 모두 선 실행 지시 -->
+			<ref bean="LoginCheckInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<bean id="LoginCheckInterceptor" class="com.interceptor.LoginCheckInterceptor"></bean>
+	<!-- 인터셉터 등록 끝-->
+	
+	<!-- <mvc:view-controller path="/" view-name="main"/> -->
+	<mvc:view-controller path="/memberForm" view-name="memberForm"/>
+	<mvc:view-controller path="/loginForm" view-name="loginForm"/>
+	<mvc:view-controller path="/myPage" view-name="mypage"/>
+	<mvc:view-controller path="/cartList" view-name="cartList"/>
+	<mvc:view-controller path="/orderConfirm" view-name="orderConfirm"/>
+	<mvc:view-controller path="/orderDone" view-name="orderDone"/>
+	<mvc:view-controller path="/board" view-name="board"/>
+	<mvc:view-controller path="/boardWrite" view-name="boardWrite"/>
+	<mvc:view-controller path="/boardRead" view-name="boardRead"/>
+	<mvc:view-controller path="/boardUpdate" view-name="boardUpdate"/>
+	<mvc:view-controller path="/boardDelete" view-name="boardDelete"/>
+</beans>

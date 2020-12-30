@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BoardMapper">
+
+	<!-- 페이징1 -->
+	<select id="listCount" resultType="int">
+		<![CDATA[
+			SELECT COUNT(BNO)
+			  FROM MP_BOARD
+			 WHERE BNO > 0
+		]]>
+	</select>
+
+	<!-- 페이징2 -->
+	<select id="listPage" resultType="BoardDTO" parameterType="PageDTO">
+		SELECT BNO,
+		TITLE,
+		CONTENT,
+		WRITER,
+		REGDATE
+		FROM (
+		SELECT BNO,
+		TITLE,
+		CONTENT,
+		WRITER,
+		REGDATE,
+		ROW_NUMBER() OVER(ORDER BY BNO DESC) AS RNUM
+		FROM MP_BOARD
+		) MP
+		WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd}
+		ORDER BY BNO DESC
+	</select>
+
+	<!-- 게시글 수정 -->
+	<update id="boardUpdate" parameterType="BoardDTO">
+		UPDATE MP_BOARD
+		SET TITLE
+		= #{title},
+		CONTENT = #{content}
+		WHERE BNO = #{bno}
+	</update>
+
+	<!-- 게시글 삭제 -->
+	<delete id="boardDelete" parameterType="int">
+		DELETE
+		FROM MP_BOARD
+		WHERE
+		BNO = #{bno}
+	</delete>
+
+	<!-- 게시판 내용 조회 -->
+	<select id="boardRead" parameterType="int" resultType="BoardDTO">
+		SELECT BNO
+		, TITLE
+		, CONTENT
+		, WRITER
+		, REGDATE
+		FROM MP_BOARD
+		WHERE BNO = #{bno}
+	</select>
+
+	<!-- 게시판 글 작성 -->
+	<insert id="boardAdd">
+		INSERT INTO MP_BOARD( BNO
+		, TITLE
+		, CONTENT
+		, WRITER )
+		VALUES( MP_BOARD_SEQ.NEXTVAL
+		, #{title}
+		, #{content}
+		, #{writer} )
+	</insert>
+
+	<!-- 게시판 목록 조회 -->
+	<select id="boardList" resultType="BoardDTO">
+		SELECT BNO
+		, TITLE
+		, WRITER
+		,
+		REGDATE
+		FROM MP_BOARD
+		ORDER BY BNO DESC
+	</select>
+
+</mapper>
